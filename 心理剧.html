@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>代理开关与推特模拟</title>
+    <!-- 使用国内可访问的FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            color: #333;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        h1 {
+            color: #1da1f2;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            color: #657786;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        
+        .icons-container {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .icon-card {
+            background-color: white;
+            border-radius: 20px;
+            padding: 30px;
+            width: 200px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .icon-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+        }
+        
+        .icon-card.v-card:hover {
+            border-color: #4CAF50;
+        }
+        
+        .icon-card.twitter-card:hover {
+            border-color: #1da1f2;
+        }
+        
+        .icon-card i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .v-icon {
+            color: #4CAF50;
+        }
+        
+        .twitter-icon {
+            color: #1da1f2;
+        }
+        
+        .icon-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .status {
+            font-size: 1rem;
+            padding: 8px 15px;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 600;
+        }
+        
+        .status.off {
+            background-color: #ffe6e6;
+            color: #e74c3c;
+        }
+        
+        .status.on {
+            background-color: #e6ffe6;
+            color: #27ae60;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            animation: modalAppear 0.4s ease;
+        }
+        
+        @keyframes modalAppear {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .modal-header {
+            background-color: #1da1f2;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            font-size: 1.5rem;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+        
+        .close-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .twitter-post {
+            padding: 25px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 3px solid #1da1f2;
+        }
+        
+        .user-details h4 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: #14171a;
+        }
+        
+        .user-details p {
+            color: #657786;
+            font-size: 1rem;
+        }
+        
+        .post-content {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #14171a;
+        }
+        
+        .post-stats {
+            display: flex;
+            justify-content: space-between;
+            color: #657786;
+            padding-top: 20px;
+            border-top: 1px solid #e1e8ed;
+            font-size: 1rem;
+        }
+        
+        .post-actions {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #657786;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .post-action:hover {
+            color: #1da1f2;
+        }
+        
+        .post-action i {
+            font-size: 1.2rem;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #657786;
+            font-size: 0.9rem;
+            width: 100%;
+            max-width: 800px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e8ed;
+        }
+        
+        @media (max-width: 600px) {
+            .icons-container {
+                gap: 30px;
+            }
+            
+            .icon-card {
+                width: 160px;
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .modal-content {
+                max-width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-sliders-h"></i> 代理与社交模拟</h1>
+        <p class="subtitle">点击V图标切换代理状态，点击推特图标查看模拟推文</p>
+    </div>
+    
+    <div class="icons-container">
+        <div class="icon-card v-card" id="v-card">
+            <i class="fas fa-check-circle v-icon"></i>
+            <h3>代理开关</h3>
+            <div class="status off" id="proxy-status">代理已关闭</div>
+        </div>
+        
+        <div class="icon-card twitter-card" id="twitter-card">
+            <i class="fab fa-twitter twitter-icon"></i>
+            <h3>查看推文</h3>
+            <div class="status">点击打开</div>
+        </div>
+    </div>
+    
+    <!-- 推特模拟模态框 -->
+    <div class="modal" id="twitter-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fab fa-twitter"></i> 推特模拟页面</h2>
+                <button class="close-btn" id="close-modal">&times;</button>
+            </div>
+            
+            <div class="twitter-post">
+                <div class="user-info">
+                    <!-- 使用一个黑人头像的示例图片，通过unsplash的API获取 -->
+                    <img src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80" alt="用户头像" class="avatar">
+                    <div class="user-details">
+                        <h4>特朗普 <span class="verified"><i class="fas fa-check-circle" style="color: #1da1f2;"></i></span></h4>
+                        <p>@realDonaldTrump · 2小时前</p>
+                    </div>
+                </div>
+                
+                <div class="post-content">
+                    <p>Hi from me and my golden retriever, Sunny! 🌟 He's 3 years old, a certified couch potato 🥔, and an expert at stealing socks. 🧦</p>
+                    <br>
+                    <p>Today he tried to "help" me garden by digging a hole to China... 😂</p>
+                    <br>
+                    <p>What funny things has your pet done lately? Share your stories! 🐶💬</p>
+                </div>
+                
+                <div class="post-stats">
+                    <div class="post-stat"><strong>245</strong> 转推</div>
+                    <div class="post-stat"><strong>1.2万</strong> 引用</div>
+                    <div class="post-stat"><strong>8.5万</strong> 喜欢</div>
+                </div>
+                
+                <div class="post-actions">
+                    <div class="post-action">
+                        <i class="far fa-comment"></i> <span>评论</span>
+                    </div>
+                    <div class="post-action">
+                        <i class="fas fa-retweet"></i> <span>转推</span>
+                    </div>
+                    <div class="post-action">
+                        <i class="far fa-heart"></i> <span>喜欢</span>
+                    </div>
+                    <div class="post-action">
+                        <i class="fas fa-share"></i> <span>分享</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>本页面仅用于模拟展示，所有功能均为前端演示，不连接任何实际服务</p>
+        <p>使用FontAwesome图标库 | 设计响应式布局 | 国内可正常访问</p>
+    </div>
+    
+    <script>
+        // 获取DOM元素
+        const vCard = document.getElementById('v-card');
+        const proxyStatus = document.getElementById('proxy-status');
+        const twitterCard = document.getElementById('twitter-card');
+        const twitterModal = document.getElementById('twitter-modal');
+        const closeModalBtn = document.getElementById('close-modal');
+        
+        // 代理状态变量
+        let proxyEnabled = false;
+        
+        // 点击V图标切换代理状态
+        vCard.addEventListener('click', function() {
+            proxyEnabled = !proxyEnabled;
+            
+            if (proxyEnabled) {
+                proxyStatus.textContent = "代理已开启";
+                proxyStatus.className = "status on";
+                vCard.querySelector('i').style.color = "#4CAF50";
+                
+                // 添加一个简单的动画效果
+                vCard.style.transform = "scale(1.05)";
+                setTimeout(() => {
+                    vCard.style.transform = "";
+                }, 200);
+            } else {
+                proxyStatus.textContent = "代理已关闭";
+                proxyStatus.className = "status off";
+                vCard.querySelector('i').style.color = "#e74c3c";
+            }
+        });
+        
+        // 点击推特图标打开模态框
+        twitterCard.addEventListener('click', function() {
+            twitterModal.style.display = "flex";
+            document.body.style.overflow = "hidden";
+        });
+        
+        // 点击关闭按钮关闭模态框
+        closeModalBtn.addEventListener('click', function() {
+            twitterModal.style.display = "none";
+            document.body.style.overflow = "auto";
+        });
+        
+        // 点击模态框背景关闭模态框
+        twitterModal.addEventListener('click', function(event) {
+            if (event.target === twitterModal) {
+                twitterModal.style.display = "none";
+                document.body.style.overflow = "auto";
+            }
+        });
+        
+        // 为帖子操作按钮添加交互效果
+        document.querySelectorAll('.post-action').forEach(action => {
+            action.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                const text = this.querySelector('span');
+                
+                // 简单的心形动画
+                if (icon.classList.contains('fa-heart')) {
+                    if (icon.classList.contains('far')) {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                        icon.style.color = "#e0245e";
+                        text.textContent = "已喜欢";
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far');
+                        icon.style.color = "";
+                        text.textContent = "喜欢";
+                    }
+                }
+                
+                // 为其他按钮添加简单的点击反馈
+                this.style.transform = "scale(0.95)";
+                setTimeout(() => {
+                    this.style.transform = "";
+                }, 200);
+            });
+        });
+    </script>
+</body>
+</html>
