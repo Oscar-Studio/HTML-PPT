@@ -6,6 +6,12 @@
       "tags": ["作业", "生物"],
       "icon": "",
       "featured": false
+    },{
+      "name": "心理剧",
+      "description": "心理剧的小道具",
+      "tags": ["作业", "心理"],
+      "icon": "",
+      "featured": false
     }
   ]
 }
