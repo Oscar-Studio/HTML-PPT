@@ -222,9 +222,7 @@
             }
 
             // Wait for morphCard shrink animation (750ms) to complete before removing
-            // Then wait for all card returning animations (700ms + stagger)
             const cardReturnTime = hidingCards.length * 40 + 700;
-            const totalCleanupTime = Math.max(750, cardReturnTime + 100);
 
             setTimeout(() => {
                 if (morphCard) {
@@ -239,7 +237,7 @@
                 }
 
                 if (!isLowQuality) {
-                    // Clean up after all card animations complete
+                    // Clean up card classes and styles after returning animations finish
                     setTimeout(() => {
                         hidingCards.forEach(card => {
                             card.classList.remove('hiding', 'returning');
@@ -249,12 +247,12 @@
                         if (selectedCard) {
                             selectedCard.style.opacity = '';
                         }
-                    }, cardReturnTime + 50);
+                    }, cardReturnTime);
                 }
 
                 selectedCard = null;
                 selectedTool = null;
-            }, isLowQuality ? 0 : totalCleanupTime);
+            }, 750);
         }
 
         // Keyboard escape
