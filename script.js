@@ -40,6 +40,7 @@
         let morphCard = null;
         let selectedTool = null;
         let selectedCard = null;
+        let isClosing = false;
 
         // Load tools
         fetch('tools-config.json')
@@ -81,7 +82,7 @@
         }
 
         function selectCard(cardElement, tool) {
-            if (morphCard) return;
+            if (morphCard || isClosing) return;
             selectedTool = tool;
             selectedCard = cardElement;
             const isLowQuality = document.body.classList.contains('low-quality');
@@ -179,7 +180,8 @@
         }
 
         function closeMorphCard() {
-            if (!morphCard || !selectedCard) return;
+            if (!morphCard || !selectedCard || isClosing) return;
+            isClosing = true;
             const isLowQuality = document.body.classList.contains('low-quality');
 
             const originalRect = selectedCard.getBoundingClientRect();
@@ -252,6 +254,7 @@
 
                 selectedCard = null;
                 selectedTool = null;
+                isClosing = false;
             }, 750);
         }
 
