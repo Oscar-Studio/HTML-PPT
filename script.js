@@ -92,6 +92,14 @@
             selectedCard = cardElement;
             const isLowQuality = document.body.classList.contains('low-quality');
 
+            // Clean up ALL card states before opening
+            cardContainer.querySelectorAll('.card').forEach(card => {
+                card.classList.remove('hiding', 'returning');
+                card.style.animationDelay = '';
+                card.style.transform = '';
+                card.style.opacity = '';
+            });
+
             const rect = cardElement.getBoundingClientRect();
 
             // Create morph card at card's position
@@ -156,12 +164,13 @@
                 morphCard.style.minHeight = targetHeight + 'px';
             }
 
-            // Other cards hide - first clean up any stale classes from previous sessions
-            cardContainer.querySelectorAll('.card.hiding, .card.returning').forEach(card => {
+            // Other cards hide - clean up ALL card states before adding hiding class
+            cardContainer.querySelectorAll('.card').forEach(card => {
                 card.classList.remove('hiding', 'returning');
                 card.style.animationDelay = '';
                 card.style.transform = '';
                 card.style.opacity = '';
+                card.style.display = '';
             });
 
             const allCards = Array.from(cardContainer.querySelectorAll('.card'));
