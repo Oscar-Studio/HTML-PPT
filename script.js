@@ -294,7 +294,7 @@
             if (e.key === 'Escape' && morphCard) closeMorphCard();
         });
 
-        // Search
+        // Search — focus/blur 视觉态保留；input 走 Opilot 增强
         searchInput.addEventListener('focus', () => {
             document.querySelector('.search-box').classList.add('searching');
         });
@@ -303,15 +303,31 @@
             document.querySelector('.search-box').classList.remove('searching');
         });
 
-        searchInput.addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase().trim();
-            if (term) {
-                renderCards(tools.filter(t =>
-                    t.name.toLowerCase().includes(term) ||
-                    (t.tags && t.tags.some(tag => tag.toLowerCase().includes(term))) ||
-                    t.description.toLowerCase().includes(term)
-                ));
-            } else {
-                renderCards(tools);
-            }
-        });
+        if (window.Opilot) {
+            Opilot.enhance(searchInput, {
+                tools: tools,
+                site: 'ppt',
+                onKeyword: (term) => {
+                    const lower = (term || '').toLowerCase().trim();
+                    if (!lower) { renderCards(tools); return; }
+                    renderCards(tools.filter(t =>
+                        t.name.toLowerCase().includes(lower) ||
+                        (t.tags && t.tags.some(tag => tag.toLowerCase().includes(lower))) ||
+                        t.description.toLowerCase().includes(lower)
+                    ));
+                }
+            });
+        } else {
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase().trim();
+                if (term) {
+                    renderCards(tools.filter(t =>
+                        t.name.toLowerCase().includes(term) ||
+                        (t.tags && t.tags.some(tag => tag.toLowerCase().includes(term))) ||
+                        t.description.toLowerCase().includes(term)
+                    ));
+                } else {
+                    renderCards(tools);
+                }
+            });
+        }
