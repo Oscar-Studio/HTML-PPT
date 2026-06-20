@@ -75,7 +75,7 @@
 
             toolsToRender.forEach(tool => {
                 const card = document.createElement('div');
-                card.className = 'card';
+                card.className = 'card glass-element';
                 card.innerHTML = `
                     <div class="card-header">
                         <span class="card-icon">${tool.icon || '📄'}</span>
