@@ -41,6 +41,7 @@
         let selectedTool = null;
         let selectedCard = null;
         let isClosing = false;
+        let cardTimeouts = [];
 
         // Load tools
         fetch('tools-config.json')
@@ -99,6 +100,10 @@
                 morphCard = null;
             }
             if (morphCard || isClosing) return;
+            // Cancel any pending timeouts from a previous close (returning + cleanup)
+            // so they don't re-add .returning or strip .hiding after we set things up
+            cardTimeouts.forEach(clearTimeout);
+            cardTimeouts = [];
             selectedTool = tool;
             selectedCard = cardElement;
             const isLowQuality = document.body.classList.contains('low-quality');
@@ -249,9 +254,9 @@
                         card.style.transform = 'translateY(-100vh)';
                         card.style.opacity = '0';
                         card.getBoundingClientRect();
-                        setTimeout(() => {
+                        cardTimeouts.push(setTimeout(() => {
                             card.classList.add('returning');
-                        }, i * 40);
+                        }, i * 40));
                     });
                 });
             }
@@ -273,7 +278,7 @@
                 // Clean up returning cards after their animation
                 if (!isLowQuality) {
                     const cardReturnTime = hidingCards.length * 40 + 700;
-                    setTimeout(() => {
+                    cardTimeouts.push(setTimeout(() => {
                         hidingCards.forEach(card => {
                             card.classList.remove('hiding', 'returning');
                             card.style.transform = '';
@@ -282,7 +287,7 @@
                         if (selectedCard && selectedCard.isConnected) {
                             selectedCard.style.opacity = '';
                         }
-                    }, cardReturnTime);
+                    }, cardReturnTime));
                 }
 
                 selectedCard = null;
