@@ -1,20 +1,39 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="/favicon.ico" type="image/x-icon">
-  <title>HTML演示工具集 - Oscar Studio</title>
-  <link rel="stylesheet" href="/style.css?v=9">
-  <script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
-  <script>LA.init({ id: "3ObWyMneL7EkDfrL", ck: "3ObWyMneL7EkDfrL" })</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5" />
+  <meta name="theme-color" content="#0c0c14" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <meta name="description" content="Oscar Studio HTML PPT 编辑器 - 在线制作和发布 HTML 演示文稿" />
+  <link rel="preconnect" href="https://ai.oscarstudio.cn" />
+  <link rel="preconnect" href="https://api.oscarstudio.cn" />
+  <link rel="preconnect" href="https://sdk.51.la" />
+  <title>HTML PPT 编辑器 - Oscar Studio</title>
+  <script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js" defer></script>
+  <script defer>window.LA&&LA.init({ id: "3ObWyMneL7EkDfrL", ck: "3ObWyMneL7EkDfrL" });</script>
+    <script>
+      // 渲染前应用主题，避免闪烁
+      (function() {
+        try {
+          var t = localStorage.getItem('oscar-theme');
+          var resolved;
+          if (t === 'light' || t === 'dark') {
+            resolved = t;
+          } else {
+            // system 或未设置：跟随系统
+            resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.setAttribute('data-theme', resolved);
+        } catch (e) { /* ignore */ }
+      })();
+    </script>
+
 </head>
 <body>
   <div id="root"></div>
-  <!-- WebGL 液态玻璃 canvas（由 React 组件按需初始化） -->
-  <canvas id="liquid-glass-canvas" data-lg-auto aria-hidden="true"></canvas>
-  <!-- 共享头部/侧栏挂载点（保留给 user-button.js / opilot.js） -->
-  <div id="userButtonContainer" style="display:none"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>

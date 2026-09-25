@@ -1,44 +1,15 @@
-import { useRef, useState, useCallback } from 'react';
-import { TopBar } from './components/TopBar';
-import { Hero } from './components/Hero';
-import { CardGrid } from './components/CardGrid';
-import { MorphCard } from './components/MorphCard';
-import { useToolsConfig } from './hooks/useToolsConfig';
-import { useOpilot } from './hooks/useOpilot';
-import { useGlassBackground } from './components/GlassProvider';
-import type { Tool } from './types';
+import { Routes, Route } from 'react-router-dom';
+import { HomePage } from './pages/HomePage';
+import { EditorPage } from './pages/EditorPage';
+import { PreviewPage } from './pages/PreviewPage';
 
-export default function App() {
-  useGlassBackground();
-  const { tools, loading, error } = useToolsConfig();
-  const [selected, setSelected] = useState<{ tool: Tool; rect: DOMRect } | null>(null);
-  const searchInputRef = useRef<HTMLInputElement | null>(null);
-
-  useOpilot(searchInputRef.current, tools, 'ppt');
-
-  const handleSelect = useCallback((tool: Tool, rect: DOMRect) => {
-    setSelected({ tool, rect });
-  }, []);
-
-  const handleClose = useCallback(() => {
-    setSelected(null);
-  }, []);
-
+export function App() {
   return (
-    <>
-      <TopBar />
-      <Hero />
-      <CardGrid
-        tools={tools}
-        loading={loading}
-        error={error}
-        onSelect={handleSelect}
-      />
-      <MorphCard
-        tool={selected?.tool ?? null}
-        sourceRect={selected?.rect ?? null}
-        onClose={handleClose}
-      />
-    </>
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/editor/:id" element={<EditorPage />} />
+      <Route path="/preview/:id" element={<PreviewPage />} />
+      <Route path="*" element={<HomePage />} />
+    </Routes>
   );
 }
