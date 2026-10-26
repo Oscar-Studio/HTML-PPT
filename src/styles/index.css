@@ -465,3 +465,18 @@ select {
   background: #f5f5f7 !important;
   border-color: rgba(0, 201, 255, 0.5) !important;
 }
+
+/* The library has a calm canvas; the personal photo stays on the cover. */
+.ppt-home, [data-theme="light"] .ppt-home { --ppt-home-muted: #777167; background: #f6f4ef; color: #282621; }
+[data-theme="dark"] .ppt-home { --ppt-home-muted: #b9b3a9; background: #1c1d1b; color: #f6f1e7; }
+.ppt-home .ppt-home-header { max-width: 1280px; margin: 0 auto; border-bottom: 1px solid #8883; min-height: 82px; }
+.ppt-home .ppt-home-brand, .ppt-home .ppt-home-title, .ppt-home .ppt-home-sep { color: inherit; }
+.ppt-home .ppt-home-brand { font-weight: 650; opacity: 1; }
+.ppt-home .ppt-home-title { font-size: 14px; font-weight: 400; color: var(--ppt-home-muted); }
+.ppt-home .ppt-home-main { max-width: 1280px; padding-top: 30px; }
+.ppt-home .ppt-btn { background: transparent; border: 1px solid #8885; border-radius: 3px; color: inherit; font-size: 13px; padding: 10px 17px; }
+.ppt-home .ppt-btn-primary { background: #a94f35; border-color: #a94f35; color: #fff8ee; }
+.ppt-home .ppt-empty { background: transparent; color: var(--ppt-home-muted); border: 1px dashed #8885; border-radius: 4px; padding-block: 48px; }
+.ppt-home .ppt-project-card { color: inherit; background: #88888808; border-color: #8884; border-radius: 4px; box-shadow: none; }
+.ppt-home .ppt-project-title { color: inherit; }
+.ppt-home .ppt-project-meta, .ppt-home .ppt-home-footer { color: var(--ppt-home-muted); }

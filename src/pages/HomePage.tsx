@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { BackgroundCover } from '../components/BackgroundCover';
 import { ThemeToggle } from '../components/ThemeToggle';
 import { Link, useNavigate } from 'react-router-dom';
 import { listProjects, deleteProject, loadProject, saveProject } from '../lib/storage';
@@ -108,6 +109,14 @@ export function HomePage() {
           </div>
         )}
 
+        <BackgroundCover variant="ppt" label="04 / PRESENT — 每一个想法，都值得被看见。">
+          <section className="ppt-cover-intro" aria-labelledby="ppt-cover-title">
+            <p>OSCAR STUDIO / THE PRESENTATION ROOM</p>
+            <h2 id="ppt-cover-title">Ideas,<br /><em>in motion.</em></h2>
+            <p>从一个想法，到一场精彩表达。<br />用 HTML，让每一页都有自己的样子。</p>
+          </section>
+        </BackgroundCover>
+        <div className="ppt-library-heading"><h2>我的作品</h2><span>YOUR NEXT GREAT STORY</span></div>
         <div className="ppt-home-actions">
           <button onClick={handleNew} className="ppt-btn ppt-btn-primary">
             ＋ 新建作品
